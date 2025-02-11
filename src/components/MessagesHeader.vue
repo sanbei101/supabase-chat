@@ -6,7 +6,7 @@ import useStore from '@/store';
 const store = useStore();
 </script>
 <template>
-  <div class="dark:bg-neutral-950 w-full flex items-center px-3 justify-between py-1 bg-zinc-300 rounded-t-2xl">
+  <div class="dark:bg-neutral-950 w-full flex items-center px-3 justify-between py-2 bg-zinc-300 rounded-t-2xl">
     <div class="flex cursor-pointer text-green-500 items-center font-semibold animate-pulse">
       <p>当前在线人数:</p>
       <div class="relative ml-1">

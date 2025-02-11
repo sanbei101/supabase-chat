@@ -18,11 +18,11 @@ const inputedMessage = computed<Message>(() => ({
   author: store.userName,
   created_at: new Date().toISOString()
 }));
-function sendMessage() {
+async function sendMessage() {
   if (inputedText.value.trim() === '') return;
   store.messages.push(inputedMessage.value);
   try {
-    createMessage(inputedMessage.value);
+    await createMessage(inputedMessage.value);
   } catch (error) {
     console.error(error);
   } finally {
@@ -45,7 +45,8 @@ function sendMessage() {
         <input
           class="flex-1 py-3 px-4 rounded-xl bg-neutral-200 dark:bg-neutral-700 dark:text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
           placeholder="输入消息..."
-          :value="inputedText" />
+          v-model="inputedText"
+          @keyup.enter="sendMessage" />
         <button class="p-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white transition-colors cursor-pointer" @click="sendMessage">
           <send-horizontal class="w-5 h-5" />
         </button>
