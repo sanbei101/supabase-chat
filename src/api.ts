@@ -1,7 +1,7 @@
 import { supabase } from '@/supabase';
 
 export type Message = {
-  id: number;
+  id: string;
   text: string;
   author: string;
   created_at: string;

@@ -1,21 +1,20 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
+import { Message } from './api';
 
 export default defineStore('main', () => {
   const userName = ref<string>('Mike');
-  const messageCount = ref<number>(0);
+  const messages = ref<Message[]>([]);
+  const messageCount = computed(() => messages.value.length);
   const onlinePeople = ref<number>(0);
   function setUserName(name: string) {
     userName.value = name;
   }
-  function incrementMessageCount() {
-    messageCount.value++;
-  }
   return {
+    messages,
     userName,
     messageCount,
     onlinePeople,
-    setUserName,
-    incrementMessageCount
+    setUserName
   };
 });

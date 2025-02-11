@@ -1,9 +1,4 @@
 <script setup lang="ts">
-// import pulseDotIcon from '@/components/pulse-dot-icon.vue';
-// import messagesIcon from '@/components/messages-icon.vue';
-// import usersIcon from '@/components/users-icon.vue';
-// import countryIcon from '@/components/country-icon.vue';
-// import vSelect from '@/components/vSelect.vue';
 import { Dot, MessageCircle } from 'lucide-vue-next';
 
 import useStore from '@/store';

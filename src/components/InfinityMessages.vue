@@ -1,78 +1,55 @@
 <script setup lang="ts">
 import MessageBubble from '@/components/MessageBubble.vue';
-
-import { onMounted, ref } from 'vue';
-import { Message } from '@/api';
+import { v4 } from 'uuid';
+import { computed, onMounted, ref } from 'vue';
+import { SendHorizontal } from 'lucide-vue-next';
+import { createMessage, fetchMessages, Message } from '@/api';
 import useStore from '@/store.js';
 
 const store = useStore();
-// const page = ref<number>(1);
-const messages = ref<Message[]>([
-  {
-    id: 1,
-    author: 'Alice',
-    text: '你好！今天天气真不错 👋',
-    created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  },
-  {
-    id: 2,
-    author: store.userName, // 当前用户
-    text: '是啊，适合出去走走 🌞',
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 3,
-    author: 'Bob',
-    text: '周末有人一起去爬山吗？ 🏃‍♂️',
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 4,
-    author: store.userName,
-    text: '算我一个！ 🙋‍♂️',
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 1,
-    author: 'Alice',
-    text: '你好！今天天气真不错 👋',
-    created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  },
-  {
-    id: 2,
-    author: store.userName, // 当前用户
-    text: '是啊，适合出去走走 🌞',
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 3,
-    author: 'Bob',
-    text: '周末有人一起去爬山吗？ 🏃‍♂️',
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 4,
-    author: store.userName,
-    text: '算我一个！ 🙋‍♂️',
-    created_at: new Date().toISOString()
+
+onMounted(async () => {
+  store.messages = await fetchMessages();
+});
+const inputedText = ref<string>('');
+const inputedMessage = computed<Message>(() => ({
+  id: v4(),
+  text: inputedText.value,
+  author: store.userName,
+  created_at: new Date().toISOString()
+}));
+function sendMessage() {
+  if (inputedText.value.trim() === '') return;
+  store.messages.push(inputedMessage.value);
+  try {
+    createMessage(inputedMessage.value);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    inputedText.value = '';
   }
-]);
-onMounted(async () => {});
+}
 </script>
 
 <template>
   <div class="flex flex-col gap-3 dark:bg-neutral-950 px-3 py-14 overflow-y-auto rounded-b-2xl bg-neutral-300">
     <message-bubble
-      v-for="item in messages"
+      v-for="item in store.messages"
       :key="item.id"
       :author="item.author"
       :created_at="item.created_at"
       :is-me="item.author === store.userName"
       :text="item.text" />
-    <textarea
-      class="z-10 fixed bottom-20 self-center py-2 px-4 min-w-[80%] max-w-[90%] md:min-w-xl resize-none overflow-hidden rounded-xl bg-neutral-200 dark:bg-neutral-700"
-      rows="1"
-      placeholder="输入消息...">
-    </textarea>
+    <div class="fixed bottom-20 left-0 right-0 px-4">
+      <div class="flex items-center gap-2 max-w-3xl mx-auto">
+        <input
+          class="flex-1 py-3 px-4 rounded-xl bg-neutral-200 dark:bg-neutral-700 dark:text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+          placeholder="输入消息..."
+          :value="inputedText" />
+        <button class="p-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white transition-colors cursor-pointer" @click="sendMessage">
+          <send-horizontal class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
   </div>
 </template>
